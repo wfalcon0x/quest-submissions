@@ -504,12 +504,13 @@ pub contract CryptoPoops: NonFungibleToken {
 
 ```
 import CryptoPoops from 0x01
+import NonFungibleToken from 0x02
 transaction {
     prepare(acct: AuthAccount) {
         if acct.borrow<&CryptoPoops.Collection>(from: /storage/CryptoPoopsCollection) == nil {
             let collection <- CryptoPoops.createEmptyCollection() as! @CryptoPoops.Collection
             acct.save(<-collection, to: /storage/CryptoPoopsCollection)
-            acct.link<&{CryptoPoops.CryptoPoopsCollectionPublic}>(/public/CryptoPoopsCollection, target: /storage/CryptoPoopsCollection)
+            acct.link<&CryptoPoops.Collection{CryptoPoops.CryptoPoopsCollectionPublic, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic}>(/public/CryptoPoopsCollection, target: /storage/CryptoPoopsCollection)
         }
     }
 }
